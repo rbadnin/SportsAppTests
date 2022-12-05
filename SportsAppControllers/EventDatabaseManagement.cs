@@ -2,91 +2,90 @@
 using Newtonsoft.Json;
 using EventModelNamespace;
 
-namespace EventDatabaseManagement
+namespace SportsAppControllers;
+
+public class EventDatabaseManagement
 {
-    public class EventDatabaseManagement
+    public async void createEvent(string title, string icon, string imageURL, string venueName, string venueAddress, string date, string description, int follower_count)
     {
-        public async void createEvent(string title, string icon, string imageURL, string venueName, string venueAddress, string date, string description, int follower_count)
+
+        using (var client = new HttpClient())
         {
+            var endpoint = new Uri("https://sportsfunctionapp.azurewebsites.net/api/CreateEvent");
 
-            using (var client = new HttpClient())
+            var newEvent = new EventModel()
             {
-                var endpoint = new Uri("https://sportsfunctionapp.azurewebsites.net/api/CreateEvent");
+                Title = title,
+                Icon = icon,
+                ImageURL = imageURL,
+                VenueName = venueName,
+                VenueAddress = venueAddress,
+                Date = date,
+                Description = description,
+                FollowerCount = follower_count
+            };
 
-                var newEvent = new EventModel()
-                {
-                    Title = title,
-                    Icon = icon,
-                    ImageURL = imageURL,
-                    VenueName = venueName,
-                    VenueAddress = venueAddress,
-                    Date = date,
-                    Description = description,
-                    FollowerCount = follower_count
-                };
+            // Serialize JSON event information.
+            var newPostJson = JsonConvert.SerializeObject(newEvent);
+            var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
 
-                // Serialize JSON event information.
-                var newPostJson = JsonConvert.SerializeObject(newEvent);
-                var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
-
-                // Make POST request.
-                var response = await client.PostAsync(endpoint, payload);
-                var result = response.Content.ReadAsStringAsync().Result;
-            }
+            // Make POST request.
+            var response = await client.PostAsync(endpoint, payload);
+            var result = response.Content.ReadAsStringAsync().Result;
         }
+    }
 
-        public async Task<EventModel> fetchEvent(string id)
+    public async Task<EventModel> fetchEvent(string id)
+    {
+        using (var client = new HttpClient())
         {
-            using (var client = new HttpClient())
-            {
-                var endpoint = new Uri($"https://sportsfunctionapp.azurewebsites.net/api/FetchEvent?id={id}");
+            var endpoint = new Uri($"https://sportsfunctionapp.azurewebsites.net/api/FetchEvent?id={id}");
 
-                // Make GET request.
-                var response = await client.GetAsync(endpoint);
-                var result = response.Content.ReadAsStringAsync().Result;
+            // Make GET request.
+            var response = await client.GetAsync(endpoint);
+            var result = response.Content.ReadAsStringAsync().Result;
 
-                // Deserialize GET request.
-                return JsonConvert.DeserializeObject<EventModel>(result);
-            }
+            // Deserialize GET request.
+            return JsonConvert.DeserializeObject<EventModel>(result);
         }
+    }
 
-        public async Task<List<EventModel>> fetchAllEvents()
+    public async Task<List<EventModel>> fetchAllEvents()
+    {
+        using (var client = new HttpClient())
         {
-            using (var client = new HttpClient())
-            {
-                var endpoint = new Uri($"https://sportsfunctionapp.azurewebsites.net/api/FetchAllEvents");
+            var endpoint = new Uri($"https://sportsfunctionapp.azurewebsites.net/api/FetchAllEvents");
 
-                // Make GET request.
-                var response = client.GetAsync(endpoint).Result;
-                var result = response.Content.ReadAsStringAsync().Result;
+            // Make GET request.
+            var response = client.GetAsync(endpoint).Result;
+            var result = response.Content.ReadAsStringAsync().Result;
 
-                // Deserialize GET request.
-                return JsonConvert.DeserializeObject<List<EventModel>>(result);
-            }
+            // Deserialize GET request.
+            return JsonConvert.DeserializeObject<List<EventModel>>(result);
         }
+    }
 
-        public async void updateEvent(string event_id, string new_venue_name, string new_venue_address, string new_date, string new_description)
+    public async void updateEvent(string event_id, string new_venue_name, string new_venue_address, string new_date, string new_description)
+    {
+        using (var client = new HttpClient())
         {
-            using (var client = new HttpClient())
+            var endpoint = new Uri($"https://sportsfunctionapp.azurewebsites.net/api/UpdateEvent?id={event_id}");
+
+            // Create new EventModel object that contains the updated event info.
+            var updatedEvent = new EventModel()
             {
-                var endpoint = new Uri($"https://sportsfunctionapp.azurewebsites.net/api/UpdateEvent?id={event_id}");
+                VenueName = new_venue_name,
+                VenueAddress = new_venue_address,
+                Date = new_date,
+                Description = new_description
+            };
 
-                // Create new EventModel object that contains the updated event info.
-                var updatedEvent = new EventModel()
-                {
-                    VenueName = new_venue_name,
-                    VenueAddress = new_venue_address,
-                    Date = new_date,
-                    Description = new_description
-                };
+            // Serialize JSON updated event information.
+            var newPostJson = JsonConvert.SerializeObject(updatedEvent);
+            var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
 
-                // Serialize JSON updated event information.
-                var newPostJson = JsonConvert.SerializeObject(updatedEvent);
-                var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
-
-                // Make POST request.
-                var response = await client.PostAsync(endpoint, payload);
-            }
+            // Make POST request.
+            var response = await client.PostAsync(endpoint, payload);
         }
     }
 }

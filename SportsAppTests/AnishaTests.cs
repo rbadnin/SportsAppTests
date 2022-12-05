@@ -1,3 +1,5 @@
+using SportsAppControllers;
+
 namespace SportsAppTests
 {
     [TestClass]
