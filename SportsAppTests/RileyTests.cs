@@ -28,7 +28,7 @@ namespace SportsAppTests
             Assert.IsTrue(result.Username == username && result.Password == password);
         }
 
-        // Tests a bad username/password fetch
+        // Tests a bad username fetch
         [TestMethod]
         public void TestMethod3()
         {
