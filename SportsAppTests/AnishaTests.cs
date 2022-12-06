@@ -14,7 +14,7 @@ namespace SportsAppTests
         [TestMethod]
         public void CreateEventTest()
         {
-            // Validate that accounts are properly added to database.
+            // Validate that events are properly added to database.
             string title = "test_title";
             string icon = "test_icon";
             string image = "test_imageURL";
@@ -51,9 +51,9 @@ namespace SportsAppTests
         }
 
         [TestMethod]
-        public void TestMethod2()
+        public void TestNull()
         {
-            // est for null event location
+            // test for null event location
             string location = "Fake location";
             string title = "Trieste vs Trento";
             EventDatabaseManagement eventDatabaseManager = new EventDatabaseManagement();
@@ -66,7 +66,7 @@ namespace SportsAppTests
         [TestMethod]
         public void FetchEventTest()
         {
-            // Test for proper event
+            // Test for available event
             EventDatabaseManagement eventDatabaseManagement = new EventDatabaseManagement();
             var result = eventDatabaseManagement.fetchEvent("63877f3c6c0dcf2317eccdbf").Result;
             Assert.IsTrue(result.Title.Equals("Fiorentina vs. Lazio"));
