@@ -66,55 +66,17 @@ namespace SportsAppTests
         {
             // Test for a non-existent event.
             EventDatabaseManagement eventDatabaseManagement = new EventDatabaseManagement();
-            var result = eventDatabaseManagement.fetchEvent("non-existent").Result;
+            var result = eventDatabaseManagement.fetchEvent("").Result;
             Assert.IsNull(result);
         }
 
         [TestMethod]
-        public void UpdateEventTest()
+        public void FetchEventTest3()
         {
-            // Test for proper updating of event.
-            var newEvent = new EventModel()
-            {
-                Title = "testupdateevent",
-                Icon = "test",
-                ImageURL = "test",
-                VenueName = "test",
-                VenueAddress = "test",
-                Date = "test",
-                Description = "test",
-                FollowerCount = 10
-            };
-
-            string connectionString = "mongodb+srv://cchannui:cchannui@cluster0.zjtdqmq.mongodb.net/test";
-            string databaseName = "sports_app";
-            string collectionName = "events";
-
-            // Establish connection to MongoDB.
-            var client = new MongoClient(connectionString);
-            var db = client.GetDatabase(databaseName);
-            var collection = db.GetCollection<EventModel>(collectionName);
-
-            // Add test event to database.
-            collection.InsertOneAsync(newEvent);
-
-            // Update event information.
-            string new_venue_name = "updated";
-            string new_venue_address = "updated";
-            string new_date = "updated";
-            string new_description = "updated";
+            // Test for a incorrect name for event.
             EventDatabaseManagement eventDatabaseManagement = new EventDatabaseManagement();
-            eventDatabaseManagement.updateEvent(newEvent.Id, new_venue_name, new_venue_address, new_date, new_description);
-
-            // Fetch and verify update.
-            var result = eventDatabaseManagement.fetchEvent(newEvent.Id).Result;
-            bool isEqual = result.VenueName.Equals(new_venue_name);
-            Console.WriteLine(result.Title);
-
-            // Remove from database.
-            collection.DeleteOne(document => document.Id == newEvent.Id);
-
-            Assert.IsTrue(isEqual);
+            var result = eventDatabaseManagement.fetchEvent("incorrect name").Result;
+            Assert.IsNull(result);
         }
     }
 }
